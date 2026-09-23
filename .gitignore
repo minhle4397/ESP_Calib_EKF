@@ -1,0 +1,16 @@
+# ESP-IDF build output
+build/
+sdkconfig
+sdkconfig.old
+
+# IDE & Editor files
+.vscode/*
+!.vscode/settings.json
+!.vscode/c_cpp_properties.json
+.idea/
+*.swp
+*~
+
+# OS generated files
+.DS_Store
+Thumbs.db
