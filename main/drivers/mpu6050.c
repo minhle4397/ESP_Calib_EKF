@@ -17,19 +17,19 @@ static i2c_master_dev_handle_t dev =  NULL;
 
 esp_err_t mpu6050_init(void){
     i2c_device_config_t dev_cfg = {
-        .dev_addr_length = I2C_ADDR_BIT_LEN_7,
-        .dev_addr = MPU6050_ADDR,
+        .dev_addr_length = I2C_ADDR_BIT_LEN_7, //Độ dài địa chỉ thiết bị I2C
+        .dev_addr = MPU6050_ADDR,  //Địa chỉ thiết bị I2C
         .scl_speed_hz = 400000,
     };
     esp_error_t err = i2c_master_bus_add_device(i2c_bus0, &dev_cfg, &dev);
     if(err != ESP_OK) return err;
 
     //Thoát chế độ sleep, chọn gyro X lam clock source (ổn định hơn internal RC)
-    ESP_ERROR_CHECK(write_reg(REG_PWR_MGMT_1, 0x01));
+    ESP_ERROR_CHECK(write_reg(REG_PWR_MGMT_1, 0x01)); //Khi bật thiết bị, nó sẽ ở chế độ sleep, cần thoát chế độ này để thiết bị hoạt động. Ngoài ra, cần chọn gyro X làm clock source vì nó ổn định hơn internal RC oscillator.
     //Sample rate = 1kHz /(1+9)= 100Hz
     ESP_ERROR_CHECK(write_reg(REG_SMPLRT_DIV, 0x09));
     //Digital low-pass filter ~44Hz (Giảm nhiễu rung tần số cao)
-    ESP_ERROR_CHECK(write_reg(RED_CONFIG, 0x03));
+    ESP_ERROR_CHECK(write_reg(REG_CONFIG, 0x03));
     //Gyro full scale  = ±500°/s
     ESP_ERROR_CHECK(write_reg(REG_GYRO_CONFIG, 0x08));
     //Accel full scale = ±4g
@@ -41,7 +41,17 @@ esp_err_t mpu6050_init(void){
 esp_err_t mpu6050_read_raw(imu_raw_t *out){
    uint8_t reg = REG_ACCEL_XOUT_H;
    uint8_t buf[14]; //accel(6) + temp(2) + gyro(6)  
-   esp_err_t err = i2c_master_transmit_receive(dev, &reg, 1, buf, sizeof(buf), 100);
+   esp_err_t err = i2c_master_transmit_receive(dev, &reg, 1, buf, sizeof(buf), 100); //device, write buffer, write size, read buffer, read size, time limit ms
+
+   if(err != ESP_OK) return err;
+   
+   out->ax = (int16_t)((buf[0] << 8) | buf[1]);
+   out->ay = (int16_t)((buf[2] << 8) | buf[3]);
+   out->az = (int16_t)((buf[4] << 8) | buf[5]);
+   //buf[6..7] là dữ liệu nhiệt độ, có thể bỏ qua
+   out->gx = (int16_t)((buf[8] << 8) | buf[9]);
+   out->gy = (int16_t)((buf[10] << 8) | buf[11]);
+   out->gz = (int16_t)((buf[12] << 8) | buf[13]);
 }
 
 
