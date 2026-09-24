@@ -4,12 +4,13 @@ sdkconfig
 sdkconfig.old
 
 # IDE & Editor files
-.vscode/*
+.vscode/* 
 !.vscode/settings.json
 !.vscode/c_cpp_properties.json
 .idea/
 *.swp
 *~
+.vscode/
 
 # OS generated files
 .DS_Store

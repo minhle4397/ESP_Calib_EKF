@@ -5,12 +5,12 @@
 
 #define MPU6050_ADDR 0x68 //AD0 = GND 
 
-#define REG_PWR_MGMT_1      0x6B
-#define REG_SMPLRT_DIV      0x19
-#define REG_CONFIG          0x1A
-#define REG_GYRO_CONFIG     0x1B
-#define REG_ACCEL_CONFIG    0x1C
-#define REG_ACCEL_XOUT_H    0x3B
+#define REG_PWR_MGMT_1      0x6B //Power management 1
+#define REG_SMPLRT_DIV      0x19 //Sample rate divider
+#define REG_CONFIG          0x1A //Digital low-pass filter
+#define REG_GYRO_CONFIG     0x1B //Gyro configuration
+#define REG_ACCEL_CONFIG    0x1C //Accelerometer configuration
+#define REG_ACCEL_XOUT_H    0x3B //Accelerometer X-axis high byte
 
 static const char *TAG = "mpu6050";
 static i2c_master_dev_handle_t dev =  NULL;
@@ -40,7 +40,7 @@ esp_err_t mpu6050_init(void){
 }
 esp_err_t mpu6050_read_raw(imu_raw_t *out){
    uint8_t reg = REG_ACCEL_XOUT_H;
-   uint8_t buf[14]; //accel(6) + temp(2) + gyro(6)
+   uint8_t buf[14]; //accel(6) + temp(2) + gyro(6)  
    esp_err_t err = i2c_master_transmit_receive(dev, &reg, 1, buf, sizeof(buf), 100);
 }
 
