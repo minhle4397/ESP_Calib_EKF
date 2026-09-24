@@ -44,7 +44,7 @@ esp_err_t mpu6050_read_raw(imu_raw_t *out){
    esp_err_t err = i2c_master_transmit_receive(dev, &reg, 1, buf, sizeof(buf), 100); //device, write buffer, write size, read buffer, read size, time limit ms
 
    if(err != ESP_OK) return err;
-   
+
    out->ax = (int16_t)((buf[0] << 8) | buf[1]);
    out->ay = (int16_t)((buf[2] << 8) | buf[3]);
    out->az = (int16_t)((buf[4] << 8) | buf[5]);
@@ -52,6 +52,7 @@ esp_err_t mpu6050_read_raw(imu_raw_t *out){
    out->gx = (int16_t)((buf[8] << 8) | buf[9]);
    out->gy = (int16_t)((buf[10] << 8) | buf[11]);
    out->gz = (int16_t)((buf[12] << 8) | buf[13]);
+   return ESP_OK;
 }
 
 
