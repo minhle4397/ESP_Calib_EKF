@@ -13,12 +13,12 @@ i2c_master_bus_handle_t i2c_bus1 = NULL;
 
 esp_err_t i2c_bus_init(void){
     i2c_master_bus_config_t bus0_cfg = {
-        .i2c_port = I2C_NUM_0,
+        .i2c_port = I2C_NUM_0, //đây là bộ điều khiển I2C số 0
         .sda_io_num = I2C0_SDA_GPIO,
         .scl_io_num = I2C0_SCL_GPIO,
-        .clk_source = I2C_CLK_SRC_DEFAULT,
-        .glitch_ignore_cnt = 7,
-        .flags.enable_internal_pullup = true,
+        .clk_source = I2C_CLK_SRC_DEFAULT, //sử dụng nguồn clock mặc định
+        .glitch_ignore_cnt = 7, //bỏ qua các xung nhiễu ngắn hơn 7 chu kỳ
+        .flags.enable_internal_pullup = true, //mạch I2C là open drain nên cần bật điện trở kéo lên bên trong
     };
     esp_err_t err = i2c_new_master_bus(&bus0_cfg, &i2c_bus0);
     if(err != ESP_OK){
